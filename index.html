@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Alice — I'm So Sorry ✨</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Playfair Display & Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti for celebratory moments -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'Georgia', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                    },
+                    colors: {
+                        velvet: {
+                            950: '#070612',
+                            900: '#0d0b21',
+                            800: '#161336',
+                        },
+                        rosegold: {
+                            300: '#fbcfe8',
+                            400: '#f472b6',
+                            500: '#ec4899',
+                        },
+                        lavender: {
+                            300: '#ddd6fe',
+                            400: '#c084fc',
+                        }
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'shimmer': 'shimmer 2.5s linear infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom cosmic velvet gradient & glassmorphism refinements */
+        body {
+            background-color: #070612;
+            color: #f8fafc;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .cosmic-bg {
+            background: radial-gradient(circle at 15% 20%, rgba(192, 132, 252, 0.14) 0%, transparent 45%),
+                        radial-gradient(circle at 85% 75%, rgba(244, 114, 182, 0.14) 0%, transparent 45%),
+                        radial-gradient(circle at 50% 50%, #0d0b21 0%, #070612 100%);
+        }
+
+        .glass-card {
+            background: rgba(22, 19, 54, 0.45);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+        }
+
+        .glass-pill {
+            background: rgba(13, 11, 33, 0.72);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(244, 114, 182, 0.22);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.6);
+        }
+
+        /* Smooth page view transition */
+        .page-view {
+            display: none;
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .page-view.active {
+            display: block;
+        }
+
+        .page-view.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Custom Range Slider */
+        input[type=range] {
+            -webkit-appearance: none;
+            background: transparent;
+        }
+        input[type=range]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            height: 24px;
+            width: 24px;
+            border-radius: 9999px;
+            background: linear-gradient(135deg, #f472b6, #c084fc);
+            cursor: pointer;
+            margin-top: -8px;
+            box-shadow: 0 0 15px rgba(244, 114, 182, 0.8);
+            border: 2px solid #fff;
+            transition: transform 0.15s ease;
+        }
+        input[type=range]::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+        input[type=range]::-webkit-slider-runnable-track {
+            width: 100%;
+            height: 8px;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 9999px;
+        }
+
+        /* Flip Card 3D Effect */
+        .flip-container {
+            perspective: 1000px;
+        }
+        .flip-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.65s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-container.flipped .flip-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-front, .flip-back {
+            position: absolute;
+            inset: 0;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+        .flip-back {
+            transform: rotateY(180deg);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #070612;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(244, 114, 182, 0.35);
+            border-radius: 999px;
+        }
+    </style>
+</head>
+<body class="cosmic-bg min-h-screen font-sans antialiased selection:bg-pink-500/30 selection:text-pink-200 relative">
+
+    <!-- Ambient Cosmic Starlight & Floating Hearts Canvas -->
+    <canvas id="starlightCanvas" class="fixed inset-0 w-full h-full pointer-events-none z-0"></canvas>
+
+    <!-- Floating Toast Notification (Replaces alert) -->
+    <div id="toastContainer" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 pointer-events-none transition-all duration-300 opacity-0 -translate-y-4">
+        <div class="glass-pill px-5 py-2.5 rounded-full flex items-center gap-2.5 text-sm font-medium text-pink-100 border border-pink-400/40">
+            <span id="toastIcon">✨</span>
+            <span id="toastMessage">Notification</span>
+        </div>
+    </div>
+
+    <!-- Top Minimal Header -->
+    <header class="relative z-10 max-w-4xl mx-auto px-4 pt-6 pb-2 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-pink-500/30 to-purple-500/30 border border-pink-400/30 flex items-center justify-center shadow-inner">
+                <span class="text-base">🌙</span>
+            </div>
+            <div>
+                <span class="text-xs uppercase tracking-[0.2em] text-pink-300/80 block font-semibold">Dedicated Exclusively To</span>
+                <span class="font-serif italic text-lg text-white">Alice ✨</span>
+            </div>
+        </div>
+
+        <!-- Chapter Progress Indicator -->
+        <div class="glass-card px-3.5 py-1.5 rounded-full flex items-center gap-2 text-xs text-slate-300">
+            <span class="w-2 h-2 rounded-full bg-pink-400 animate-pulse"></span>
+            <span>Chapter <strong id="chapterNum" class="text-pink-300">1</strong> of 4</span>
+        </div>
+    </header>
+
+    <!-- Main Multi-Page Content Container -->
+    <main class="relative z-10 max-w-4xl mx-auto px-4 pt-4 pb-32">
+
+        <!-- =========================================================
+             PAGE 1: THE APOLOGY ("I'm So Sorry, Alice")
+        ========================================================== -->
+        <section id="page-1" class="page-view active visible space-y-6">
+            <!-- Hero Card -->
+            <div class="glass-card rounded-3xl p-6 sm:p-10 text-center relative overflow-hidden">
+                <div class="absolute -top-24 -right-24 w-56 h-56 bg-pink-500/15 rounded-full blur-3xl pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-24 w-56 h-56 bg-purple-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-pink-500/15 border border-pink-400/30 text-pink-200 text-xs font-medium mb-5 animate-float">
+                    <span>🥺</span>
+                    <span>Official Apology & Truth Confessional</span>
+                </div>
+
+                <h1 class="font-serif text-3xl sm:text-5xl font-semibold tracking-tight text-white leading-tight mb-4">
+                    I'm So Sorry, <span class="italic text-transparent bg-clip-text bg-gradient-to-r from-pink-300 via-rose-200 to-purple-300">Alice.</span>
+                </h1>
+
+                <p class="text-slate-300 text-base sm:text-lg max-w-2xl mx-auto leading-relaxed mb-6">
+                    Making you wait for hours and missing our video call was completely unfair to you. You deserve my undivided time, and I hate that I left you hanging when all you wanted was to see each other.
+                </p>
+
+                <!-- Excuse-O-Meter / Truth Reveal Interactive Card -->
+                <div class="max-w-xl mx-auto bg-velvet-950/60 border border-white/10 rounded-2xl p-5 sm:p-6 text-left transition-all duration-300">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-purple-300 flex items-center gap-1.5">
+                            <span>🔍</span> Excuse-O-Meter & Truth Reveal
+                        </span>
+                        <span id="truthBadge" class="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-200 border border-amber-400/30">
+                            Tap to Scan Excuses
+                        </span>
+                    </div>
+
+                    <div id="truthContent" class="space-y-3">
+                        <p class="text-sm text-slate-300">
+                            Did I forget about you? <strong class="text-rose-300">Never.</strong> Was I ignoring you? <strong class="text-rose-300">Not for a single second.</strong>
+                        </p>
+                        <button id="revealTruthBtn" onclick="revealRealReason()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-pink-500/25 to-purple-500/25 hover:from-pink-500/35 hover:to-purple-500/35 border border-pink-400/40 text-pink-100 font-medium text-sm flex items-center justify-center gap-2 transition-all active:scale-[0.98]">
+                            <span>🔐 Unlock the 100% Honest Reason</span>
+                        </button>
+                    </div>
+
+                    <!-- Hidden Truth Box revealed on click -->
+                    <div id="revealedTruthBox" class="hidden mt-4 pt-4 border-t border-white/10 space-y-2.5 animate-[fadeIn_0.4s_ease-out]">
+                        <div class="flex items-start gap-3">
+                            <span class="text-2xl mt-0.5">🤫</span>
+                            <div>
+                                <h3 class="font-semibold text-pink-200 text-sm sm:text-base">The Sister Situation (100% Verified Truth)</h3>
+                                <p class="text-sm text-slate-300 leading-relaxed mt-1">
+                                    "My sister was right there hovering around the whole time! When I video call <em>you</em>, I want zero background noise, zero eavesdropping, and 100% of my attention focused solely on your face and your voice."
+                                </p>
+                            </div>
+                        </div>
+                        <div class="bg-pink-500/10 border border-pink-400/20 rounded-xl p-3 text-xs text-pink-200/90 flex items-center justify-between">
+                            <span>Excuse Validity Score:</span>
+                            <span class="font-bold text-emerald-300">100% Pure Intentions (Still Owe You Big Time)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Interactive Patience & Love Visual Gauge -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                    <div>
+                        <h2 class="font-serif text-xl sm:text-2xl text-white">How Much I Missed You While You Waited</h2>
+                        <p class="text-xs sm:text-sm text-slate-400">Slide to see my brain every minute my sister wouldn't leave the room</p>
+                    </div>
+                    <span id="waitMinutesLabel" class="inline-block self-start sm:self-auto px-3 py-1 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-200 text-xs font-semibold">
+                        Minute 60: Peak Regret
+                    </span>
+                </div>
+
+                <div class="py-3">
+                    <input type="range" id="missYouSlider" min="1" max="180" value="90" class="w-full" oninput="updateMissGauge(this.value)">
+                    <div class="flex justify-between text-[11px] text-slate-400 mt-2">
+                        <span>1 min in</span>
+                        <span>1 hour waiting</span>
+                        <span>2 hours waiting</span>
+                        <span>3 hours ("Sis please leave!")</span>
+                    </div>
+                </div>
+
+                <div class="mt-4 p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-4">
+                    <div id="gaugeEmoji" class="text-3xl sm:text-4xl shrink-0">😩</div>
+                    <div>
+                        <div class="text-xs uppercase tracking-wider text-pink-300 font-semibold" id="gaugeStatusTitle">Internal Panic & Missing You: 75%</div>
+                        <p class="text-sm text-slate-200 mt-0.5" id="gaugeStatusText">
+                            "Checking my phone every 10 seconds wishing I could just hit the video call button and see your smile."
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Chapter Button -->
+            <div class="flex justify-end">
+                <button onclick="navigateTo(2)" class="group px-6 py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-semibold text-sm shadow-lg shadow-pink-500/25 flex items-center gap-2.5 transition-all active:scale-95">
+                    <span>Next: Why You're Worth Every Second</span>
+                    <span class="group-hover:translate-x-1 transition-transform">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             PAGE 2: WHY YOU'RE WORTH EVERY SECOND ("For Alice")
+        ========================================================== -->
+        <section id="page-2" class="page-view space-y-6">
+            <div class="text-center space-y-2 mb-2">
+                <span class="text-xs uppercase tracking-[0.2em] text-pink-300 font-semibold">Chapter II • Appreciation</span>
+                <h2 class="font-serif text-3xl sm:text-4xl text-white">Why You're Worth Every Second</h2>
+                <p class="text-sm text-slate-300 max-w-xl mx-auto">Tap each card to flip it and see why talking to you is always the highlight of my entire day.</p>
+            </div>
+
+            <!-- Interactive 4-Card Flip Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Card 1 -->
+                <div class="flip-container h-48 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-inner">
+                        <div class="flip-front glass-card rounded-3xl p-6 flex flex-col items-center justify-center text-center border border-pink-400/20 hover:border-pink-400/50 transition-colors">
+                            <span class="text-3xl mb-3">✨</span>
+                            <h3 class="font-serif text-xl text-white">Reason #1</h3>
+                            <p class="text-xs text-pink-300 mt-1">Tap to reveal</p>
+                        </div>
+                        <div class="flip-back glass-card rounded-3xl p-6 flex flex-col items-center justify-center text-center bg-gradient-to-br from-pink-500/20 to-purple-600/20 border border-pink-400/40">
+                            <h4 class="font-serif text-lg text-pink-200 mb-2">Your Smile Fixes Everything</h4>
+                            <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                                Even on my most exhausting days, the second your camera turns on and you smile, all my stress instantly disappears.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="flip-container h-48 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-inner">
+                        <div class="flip-front glass-card rounded-3xl p-6 flex flex-col items-center justify-center text-center border border-purple-400/20 hover:border-purple-400/50 transition-colors">
+                            <span class="text-3xl mb-3">🎧</span>
+                            <h3 class="font-serif text-xl text-white">Reason #2</h3>
+                            <p class="text-xs text-purple-300 mt-1">Tap to reveal</p>
+                        </div>
+                        <div class="flip-back glass-card rounded-3xl p-6 flex flex-col items-center justify-center text-center bg-gradient-to-br from-purple-500/20 to-indigo-600/20 border border-purple-400/40">
+                            <h4 class="font-serif text-lg text-purple-200 mb-2">Our Calls Are Sacred</h4>
+                            <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                                I didn't want a rushed 2-minute call with my sister listening in. You deserve uninterrupted, late-night quality time.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3 -->
+                <div class="flip-container h-48 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-inner">
+                        <div class="flip-front glass-card rounded-3xl p-6 flex flex-col items-center justify-center text-center border border-rose-400/20 hover:border-rose-400/50 transition-colors">
+                            <span class="text-3xl mb-3">💫</span>
+                            <h3 class="font-serif text-xl text-white">Reason #3</h3>
+                            <p class="text-xs text-rose-300 mt-1">Tap to reveal</p>
+                        </div>
+                        <div class="flip-back glass-card rounded-3xl p-6 flex flex-col items-center justify-center text-center bg-gradient-to-br from-rose-500/20 to-pink-600/20 border border-rose-400/40">
+                            <h4 class="font-serif text-lg text-rose-200 mb-2">Your Patience Means the World</h4>
+                            <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                                The fact that you waited for me shows how much you care—and it reminds me how lucky I am to have you, Alice.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4 -->
+                <div class="flip-container h-48 cursor-pointer" onclick="this.classList.toggle('flipped')">
+                    <div class="flip-inner">
+                        <div class="flip-front glass-card rounded-3xl p-6 flex flex-col items-center justify-center text-center border border-amber-400/20 hover:border-amber-400/50 transition-colors">
+                            <span class="text-3xl mb-3">🤍</span>
+                            <h3 class="font-serif text-xl text-white">Reason #4</h3>
+                            <p class="text-xs text-amber-300 mt-1">Tap to reveal</p>
+                        </div>
+                        <div class="flip-back glass-card rounded-3xl p-6 flex flex-col items-center justify-center text-center bg-gradient-to-br from-amber-500/15 to-pink-600/20 border border-amber-400/40">
+                            <h4 class="font-serif text-lg text-amber-200 mb-2">Even Mad, You're Cute</h4>
+                            <p class="text-xs sm:text-sm text-slate-200 leading-relaxed">
+                                You have every right to be mad at me right now, and I'm going to spend tonight making sure you're smiling again.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Heartfelt Letter Section -->
+            <div class="glass-card rounded-3xl p-6 sm:p-9 border border-pink-300/20 relative">
+                <div class="flex items-center gap-3 mb-4">
+                    <span class="text-2xl">💌</span>
+                    <h3 class="font-serif italic text-2xl text-pink-200">A Note Written Just For You</h3>
+                </div>
+                <div class="space-y-4 text-sm sm:text-base text-slate-200 leading-relaxed font-light">
+                    <p>Dear <strong class="font-semibold text-white">Alice</strong>,</p>
+                    <p>
+                        I know waiting around for hours when you were looking forward to talking is frustrating, and you have every single right to be upset with me. I shouldn't have left you wondering when we'd finally get on call.
+                    </p>
+                    <p>
+                        The truth is, with my sister right beside me, I couldn't give you the privacy, softness, and full attention you deserve. When I talk to you, I want it to be just us—no distractions, no holding back, just getting lost in conversation with my favorite person.
+                    </p>
+                    <p>
+                        I promise to communicate better next time so you're never left waiting in the dark. Now let me make it up to you properly...
+                    </p>
+                    <p class="font-serif italic text-lg text-pink-300 pt-2">
+                        Always yours, ready to video call whenever you say the word ❤️
+                    </p>
+                </div>
+            </div>
+
+            <!-- Navigation Footer -->
+            <div class="flex items-center justify-between pt-2">
+                <button onclick="navigateTo(1)" class="px-5 py-3 rounded-2xl glass-card hover:bg-white/10 text-slate-300 text-sm font-medium transition-all">
+                    ← Back
+                </button>
+                <button onclick="navigateTo(3)" class="group px-6 py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-semibold text-sm shadow-lg shadow-pink-500/25 flex items-center gap-2.5 transition-all active:scale-95">
+                    <span>Next: Your Peace Offerings</span>
+                    <span class="group-hover:translate-x-1 transition-transform">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             PAGE 3: VIDEO CALL RAINCHECK & PEACE OFFERINGS
+        ========================================================== -->
+        <section id="page-3" class="page-view space-y-6">
+            <div class="text-center space-y-2">
+                <span class="text-xs uppercase tracking-[0.2em] text-pink-300 font-semibold">Chapter III • Make-Up Menu</span>
+                <h2 class="font-serif text-3xl sm:text-4xl text-white">Redeem Your Peace Offerings</h2>
+                <p class="text-sm text-slate-300 max-w-xl mx-auto">Tap any voucher below to claim it. All perks are 100% valid immediately upon forgiveness!</p>
+            </div>
+
+            <!-- Vouchers Grid -->
+            <div id="vouchersGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <!-- Voucher 1 -->
+                <div onclick="toggleVoucher(this, 'VIP Uninterrupted Video Call (Sister-Free Zone)')" class="voucher-card glass-card rounded-3xl p-5 sm:p-6 cursor-pointer border border-white/10 hover:border-pink-400/50 transition-all relative overflow-hidden group">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-pink-500/20 border border-pink-400/30 flex items-center justify-center text-2xl shrink-0">
+                            📹
+                        </div>
+                        <span class="voucher-badge px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-slate-300 group-hover:bg-pink-500/20 group-hover:text-pink-200 transition-colors">
+                            Tap to Claim
+                        </span>
+                    </div>
+                    <h3 class="font-serif text-xl text-white mt-4">VIP Uninterrupted Video Call</h3>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
+                        Guaranteed 100% sister-free zone. Door locked, headphones on, all eyes and attention exclusively on Alice.
+                    </p>
+                </div>
+
+                <!-- Voucher 2 -->
+                <div onclick="toggleVoucher(this, 'Unlimited Late-Night Talks')" class="voucher-card glass-card rounded-3xl p-5 sm:p-6 cursor-pointer border border-white/10 hover:border-purple-400/50 transition-all relative overflow-hidden group">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-2xl shrink-0">
+                            🌙
+                        </div>
+                        <span class="voucher-badge px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-slate-300 group-hover:bg-purple-500/20 group-hover:text-purple-200 transition-colors">
+                            Tap to Claim
+                        </span>
+                    </div>
+                    <h3 class="font-serif text-xl text-white mt-4">Unlimited Late-Night Talks</h3>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
+                        Zero curfew. We stay on call talking about everything and nothing until you fall asleep first.
+                    </p>
+                </div>
+
+                <!-- Voucher 3 -->
+                <div onclick="toggleVoucher(this, 'You Pick the Movie / Show Night')" class="voucher-card glass-card rounded-3xl p-5 sm:p-6 cursor-pointer border border-white/10 hover:border-rose-400/50 transition-all relative overflow-hidden group">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-rose-500/20 border border-rose-400/30 flex items-center justify-center text-2xl shrink-0">
+                            🍿
+                        </div>
+                        <span class="voucher-badge px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-slate-300 group-hover:bg-rose-500/20 group-hover:text-rose-200 transition-colors">
+                            Tap to Claim
+                        </span>
+                    </div>
+                    <h3 class="font-serif text-xl text-white mt-4">You Pick the Movie / Show Night</h3>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
+                        Full remote control privileges. Whatever movie, series, or YouTube rabbit hole Alice chooses, we watch together.
+                    </p>
+                </div>
+
+                <!-- Voucher 4 -->
+                <div onclick="toggleVoucher(this, 'Free Pass to Roast Me For Making You Wait')" class="voucher-card glass-card rounded-3xl p-5 sm:p-6 cursor-pointer border border-white/10 hover:border-amber-400/50 transition-all relative overflow-hidden group">
+                    <div class="flex items-start justify-between gap-3">
+                        <div class="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-2xl shrink-0">
+                            👑
+                        </div>
+                        <span class="voucher-badge px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-slate-300 group-hover:bg-amber-500/20 group-hover:text-amber-200 transition-colors">
+                            Tap to Claim
+                        </span>
+                    </div>
+                    <h3 class="font-serif text-xl text-white mt-4">One Free Pass to Roast Me</h3>
+                    <p class="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
+                        You get 5 uninterrupted minutes on video call to roast me for making you wait, and I just have to sit there and take it.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Live Claimed Perks Summary Box -->
+            <div class="glass-card rounded-3xl p-5 sm:p-6 border border-pink-400/25">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-serif text-lg text-pink-200 flex items-center gap-2">
+                        <span>🎁</span> Alice's Claimed Perks Wallet
+                    </h3>
+                    <span id="claimedCountBadge" class="text-xs px-2.5 py-1 rounded-full bg-pink-500/20 text-pink-200 font-semibold">
+                        0 / 4 Claimed
+                    </span>
+                </div>
+                <div id="claimedSummaryList" class="text-sm text-slate-400 italic">
+                    No vouchers claimed yet — tap the cards above to spoil yourself, Alice!
+                </div>
+            </div>
+
+            <!-- Navigation Footer -->
+            <div class="flex items-center justify-between pt-2">
+                <button onclick="navigateTo(2)" class="px-5 py-3 rounded-2xl glass-card hover:bg-white/10 text-slate-300 text-sm font-medium transition-all">
+                    ← Back
+                </button>
+                <button onclick="navigateTo(4)" class="group px-6 py-3.5 rounded-2xl bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-semibold text-sm shadow-lg shadow-pink-500/25 flex items-center gap-2.5 transition-all active:scale-95">
+                    <span>Final Chapter: The Verdict</span>
+                    <span class="group-hover:translate-x-1 transition-transform">→</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- =========================================================
+             PAGE 4: THE FORGIVENESS VERDICT ("Am I Forgiven?")
+        ========================================================== -->
+        <section id="page-4" class="page-view space-y-6">
+            <!-- Prompt Card (Shown before she clicks Yes) -->
+            <div id="verdictPromptCard" class="glass-card rounded-3xl p-7 sm:p-12 text-center relative overflow-hidden">
+                <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-purple-500/20 border border-purple-400/30 text-purple-200 text-xs font-medium mb-5">
+                    <span>⚖️</span>
+                    <span>The Moment of Truth</span>
+                </div>
+
+                <h2 class="font-serif text-3xl sm:text-5xl text-white mb-4">
+                    So Alice... <span class="italic text-pink-300">do you forgive me?</span>
+                </h2>
+
+                <p id="verdictSubtext" class="text-slate-300 text-sm sm:text-base max-w-lg mx-auto mb-8">
+                    My phone is charged, my sister is nowhere near my room, and I'm one tap away from calling you right now.
+                </p>
+
+                <!-- Interactive Buttons Area -->
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4 min-h-[110px] relative">
+                    <button id="yesForgiveBtn" onclick="acceptForgiveness()" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-pink-500 via-rose-500 to-purple-600 hover:from-pink-400 hover:to-purple-500 text-white font-bold text-base sm:text-lg shadow-xl shadow-pink-500/30 transition-all duration-300 hover:scale-105 active:scale-95 z-10">
+                        Yes, I forgive you ❤️
+                    </button>
+
+                    <button id="noMadBtn" onclick="dodgeMadButton()" onmouseover="dodgeMadButton()" class="px-6 py-3.5 rounded-2xl glass-card border border-white/15 text-slate-300 hover:text-white font-medium text-sm transition-all duration-200">
+                        Still a little mad 😤
+                    </button>
+                </div>
+
+                <p id="playfulHint" class="text-xs text-pink-300/80 mt-6 h-4 italic"></p>
+            </div>
+
+            <!-- Celebratory Forgiven State (Hidden until Yes is clicked) -->
+            <div id="forgivenCelebrationCard" class="hidden glass-card rounded-3xl p-7 sm:p-10 text-center border border-pink-400/40 relative overflow-hidden space-y-6">
+                <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-pink-500 to-purple-500 flex items-center justify-center text-4xl shadow-lg shadow-pink-500/40 animate-bounce">
+                    💖
+                </div>
+
+                <div class="space-y-2">
+                    <span class="px-3.5 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-semibold uppercase tracking-wider">
+                        Officially Forgiven ✨
+                    </span>
+                    <h2 class="font-serif text-3xl sm:text-5xl text-white pt-2">
+                        Best decision ever, <span class="italic text-pink-300">Alice!</span>
+                    </h2>
+                    <p class="text-slate-200 text-base sm:text-lg max-w-xl mx-auto">
+                        Thank you for forgiving me! Get ready because I'm calling you right now—and every single perk you claimed is locked in.
+                    </p>
+                </div>
+
+                <!-- Live Video Call Ready Status Card -->
+                <div class="max-w-md mx-auto bg-velvet-950/70 border border-emerald-400/30 rounded-2xl p-5 text-left space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2.5">
+                            <span class="relative flex h-3 w-3">
+                                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                                <span class="relative inline-flex rounded-full h-3 w-3 bg-emerald-500"></span>
+                            </span>
+                            <span class="text-sm font-semibold text-white">Video Call Status: Ready</span>
+                        </div>
+                        <span class="text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300">Sister-Free Zone ✓</span>
+                    </div>
+                    <p class="text-xs text-slate-300">
+                        Room privacy verified. Camera ready. Waiting to see Alice's gorgeous face.
+                    </p>
+                </div>
+
+                <!-- Claimed Coupons Receipt -->
+                <div class="max-w-md mx-auto bg-white/5 border border-white/10 rounded-2xl p-5 text-left">
+                    <h3 class="font-serif text-base text-pink-200 mb-2 flex items-center justify-between">
+                        <span>🎟️ Alice's Redeemed Peace Offerings</span>
+                        <button onclick="copyReceipt()" class="text-xs font-sans px-2.5 py-1 rounded-lg bg-pink-500/20 hover:bg-pink-500/30 text-pink-200 transition-colors">
+                            Copy Receipt 📋
+                        </button>
+                    </h3>
+                    <ul id="finalReceiptList" class="space-y-1.5 text-xs sm:text-sm text-slate-200">
+                        <!-- Populated dynamically -->
+                    </ul>
+                </div>
+
+                <div class="pt-2">
+                    <button onclick="triggerHeartBurst()" class="px-6 py-3 rounded-2xl bg-white/10 hover:bg-white/15 border border-pink-400/30 text-pink-200 text-sm font-medium transition-all">
+                        Send More Hearts to Alice 💕
+                    </button>
+                </div>
+            </div>
+
+            <!-- Back Button -->
+            <div class="flex justify-start">
+                <button onclick="navigateTo(3)" class="px-5 py-3 rounded-2xl glass-card hover:bg-white/10 text-slate-300 text-sm font-medium transition-all">
+                    ← Back to Peace Offerings
+                </button>
+            </div>
+        </section>
+    </main>
+
+    <!-- =========================================================
+         FLOATING GLASS BOTTOM NAVIGATION BAR
+    ========================================================== -->
+    <nav class="fixed bottom-4 left-1/2 -translate-x-1/2 z-40 w-[94%] max-w-lg">
+        <div class="glass-pill rounded-2xl p-1.5 grid grid-cols-4 gap-1">
+            <button onclick="navigateTo(1)" id="nav-1" class="nav-btn active flex flex-col items-center justify-center py-2 px-1 rounded-xl text-xs font-medium transition-all bg-gradient-to-r from-pink-500/30 to-purple-500/30 text-white border border-pink-400/30">
+                <span class="text-base mb-0.5">🥺</span>
+                <span>Apology</span>
+            </button>
+            <button onclick="navigateTo(2)" id="nav-2" class="nav-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all">
+                <span class="text-base mb-0.5">💌</span>
+                <span>For Alice</span>
+            </button>
+            <button onclick="navigateTo(3)" id="nav-3" class="nav-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all relative">
+                <span class="text-base mb-0.5">🎟️</span>
+                <span>Perks</span>
+                <span id="navPerkDot" class="hidden absolute top-1.5 right-3 w-2 h-2 rounded-full bg-pink-400"></span>
+            </button>
+            <button onclick="navigateTo(4)" id="nav-4" class="nav-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all">
+                <span class="text-base mb-0.5">❤️</span>
+                <span>Forgive?</span>
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        // ==========================================
+        // STATE MANAGEMENT
+        // ==========================================
+        let currentPage = 1;
+        const claimedPerks = new Set();
+        let dodgeCount = 0;
+        let yesScale = 1;
+
+        const dodgePhrases = [
+            "Are you sure, Alice? 🥺",
+            "What if I add extra snacks to our next date? 🍫",
+            "My sister is officially banned from my room! 🚫",
+            "Look how shiny the pink button is though ✨",
+            "Okay, click the other one cutie 💕",
+            "Error 404: 'Stay Mad' button not found 😉",
+            "I promise I'll never make you wait again! 🤞"
+        ];
+
+        // ==========================================
+        // MULTI-PAGE NAVIGATION LOGIC
+        // ==========================================
+        function navigateTo(pageNumber) {
+            if (pageNumber === currentPage) return;
+
+            const oldPage = document.getElementById(`page-${currentPage}`);
+            const newPage = document.getElementById(`page-${pageNumber}`);
+
+            // Fade out old page
+            oldPage.classList.remove('visible');
+            setTimeout(() => {
+                oldPage.classList.remove('active');
+                newPage.classList.add('active');
+                // Trigger reflow for smooth transition
+                void newPage.offsetWidth;
+                newPage.classList.add('visible');
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 220);
+
+            // Update Navigation Bar Styles
+            document.querySelectorAll('.nav-btn').forEach((btn, idx) => {
+                const pageIdx = idx + 1;
+                if (pageIdx === pageNumber) {
+                    btn.className = 'nav-btn active flex flex-col items-center justify-center py-2 px-1 rounded-xl text-xs font-medium transition-all bg-gradient-to-r from-pink-500/30 to-purple-500/30 text-white border border-pink-400/30';
+                } else {
+                    btn.className = 'nav-btn flex flex-col items-center justify-center py-2 px-1 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all relative';
+                }
+            });
+
+            currentPage = pageNumber;
+            document.getElementById('chapterNum').textContent = pageNumber;
+        }
+
+        // ==========================================
+        // PAGE 1: TRUTH REVEAL & PATIENCE SLIDER
+        // ==========================================
+        function revealRealReason() {
+            const btn = document.getElementById('revealTruthBtn');
+            const box = document.getElementById('revealedTruthBox');
+            const badge = document.getElementById('truthBadge');
+
+            btn.classList.add('hidden');
+            box.classList.remove('hidden');
+            badge.textContent = '100% Honest Truth ✓';
+            badge.className = 'text-[11px] px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-400/30';
+
+            showToast('🔓', 'Truth unlocked: Sister-free privacy wanted!');
+        }
+
+        function updateMissGauge(minutes) {
+            const label = document.getElementById('waitMinutesLabel');
+            const emoji = document.getElementById('gaugeEmoji');
+            const title = document.getElementById('gaugeStatusTitle');
+            const text = document.getElementById('gaugeStatusText');
+
+            const pct = Math.min(100, Math.round((minutes / 180) * 100));
+
+            if (minutes < 30) {
+                label.textContent = `Minute ${minutes}: Hoping She'd Leave Soon`;
+                emoji.textContent = '🥺';
+                title.textContent = `Missing Alice Level: ${pct}%`;
+                text.textContent = `"Keep glancing at the door hoping my sister walks out so I can finally call Alice."`;
+            } else if (minutes < 90) {
+                label.textContent = `Minute ${minutes}: Getting Impatient`;
+                emoji.textContent = '😣';
+                title.textContent = `Missing Alice Level: ${pct}%`;
+                text.textContent = `"Why is my sister still standing here?! Alice is waiting and all I want to do is talk to her."`;
+            } else if (minutes < 140) {
+                label.textContent = `Minute ${minutes}: Maximum Guilt`;
+                emoji.textContent = '😩';
+                title.textContent = `Missing Alice Level: ${pct}%`;
+                text.textContent = `"Feeling awful that Alice is waiting so long. Counting down every single second until I have privacy."`;
+            } else {
+                label.textContent = `Minute ${minutes}: Full Apology Mode`;
+                emoji.textContent = '😭❤️';
+                title.textContent = `Missing Alice Level: 1000% (Off the Charts)`;
+                text.textContent = `"I owe Alice the longest, sweetest uninterrupted video call of her life right now!"`;
+            }
+        }
+
+        // ==========================================
+        // PAGE 3: VOUCHER REDEMPTION SYSTEM
+        // ==========================================
+        function toggleVoucher(cardEl, perkName) {
+            const badge = cardEl.querySelector('.voucher-badge');
+
+            if (claimedPerks.has(perkName)) {
+                claimedPerks.delete(perkName);
+                cardEl.classList.remove('border-pink-400', 'bg-pink-500/15');
+                cardEl.classList.add('border-white/10');
+                badge.textContent = 'Tap to Claim';
+                badge.className = 'voucher-badge px-3 py-1 rounded-full text-xs font-semibold bg-white/10 text-slate-300 transition-colors';
+            } else {
+                claimedPerks.add(perkName);
+                cardEl.classList.remove('border-white/10');
+                cardEl.classList.add('border-pink-400', 'bg-pink-500/15');
+                badge.textContent = 'Claimed by Alice ✨';
+                badge.className = 'voucher-badge px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-pink-500 to-purple-500 text-white shadow-md';
+
+                // Mini confetti burst
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 35,
+                        spread: 55,
+                        origin: { y: 0.7 },
+                        colors: ['#f472b6', '#c084fc', '#fbcfe8']
+                    });
+                }
+                showToast('✨', `Claimed: ${perkName}`);
+            }
+
+            updateClaimedSummary();
+        }
+
+        function updateClaimedSummary() {
+            const countBadge = document.getElementById('claimedCountBadge');
+            const summaryList = document.getElementById('claimedSummaryList');
+            const navDot = document.getElementById('navPerkDot');
+
+            countBadge.textContent = `${claimedPerks.size} / 4 Claimed`;
+
+            if (claimedPerks.size > 0) {
+                navDot.classList.remove('hidden');
+                summaryList.className = 'flex flex-wrap gap-2 mt-2';
+                summaryList.innerHTML = Array.from(claimedPerks).map(perk => `
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-pink-500/20 border border-pink-400/30 text-pink-100 text-xs font-medium">
+                        <span>✓</span> ${perk}
+                    </span>
+                `).join('');
+            } else {
+                navDot.classList.add('hidden');
+                summaryList.className = 'text-sm text-slate-400 italic';
+                summaryList.textContent = 'No vouchers claimed yet — tap the cards above to spoil yourself, Alice!';
+            }
+        }
+
+        // ==========================================
+        // PAGE 4: PLAYFUL FORGIVENESS VERDICT
+        // ==========================================
+        function dodgeMadButton() {
+            const noBtn = document.getElementById('noMadBtn');
+            const yesBtn = document.getElementById('yesForgiveBtn');
+            const hint = document.getElementById('playfulHint');
+
+            // Update playful text
+            const phrase = dodgePhrases[dodgeCount % dodgePhrases.length];
+            noBtn.textContent = phrase;
+            hint.textContent = "Psst... that button seems to be malfunctioning for cuties named Alice 😉";
+
+            // Random playful offset within safe bounds
+            const randomX = (Math.random() - 0.5) * 140;
+            const randomY = (Math.random() - 0.5) * 55;
+            const shrinkScale = Math.max(0.72, 1 - dodgeCount * 0.04);
+
+            noBtn.style.transform = `translate(${randomX}px, ${randomY}px) scale(${shrinkScale})`;
+
+            // Make Yes button slightly more inviting
+            yesScale = Math.min(1.22, yesScale + 0.04);
+            yesBtn.style.transform = `scale(${yesScale})`;
+
+            dodgeCount++;
+        }
+
+        function acceptForgiveness() {
+            const promptCard = document.getElementById('verdictPromptCard');
+            const celebrationCard = document.getElementById('forgivenCelebrationCard');
+            const receiptList = document.getElementById('finalReceiptList');
+
+            promptCard.classList.add('hidden');
+            celebrationCard.classList.remove('hidden');
+
+            // Populate receipt (if none claimed, auto-gift all 4!)
+            let perksToShow = Array.from(claimedPerks);
+            if (perksToShow.length === 0) {
+                perksToShow = [
+                    'VIP Uninterrupted Video Call (Sister-Free Zone)',
+                    'Unlimited Late-Night Talks',
+                    'You Pick the Movie / Show Night',
+                    'Free Pass to Roast Me For Making You Wait'
+                ];
+            }
+
+            receiptList.innerHTML = perksToShow.map(item => `
+                <li class="flex items-center gap-2">
+                    <span class="text-pink-400">💖</span>
+                    <span>${item}</span>
+                </li>
+            `).join('');
+
+            triggerHeartBurst();
+            showToast('❤️', 'Alice forgave you! Video call incoming!');
+        }
+
+        function triggerHeartBurst() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 90,
+                    spread: 80,
+                    origin: { y: 0.6 },
+                    colors: ['#f472b6', '#ec4899', '#c084fc', '#fde047', '#ffffff']
+                });
+            }
+        }
+
+        function copyReceipt() {
+            const perks = claimedPerks.size > 0
+                ? Array.from(claimedPerks).join(', ')
+                : 'All 4 VIP Peace Offerings';
+            const text = `Official Alice Forgiveness Receipt ✨: Forgiven! Redeemed Perks: ${perks}. Ready for our sister-free video call now! ❤️`;
+
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            try {
+                document.execCommand('copy');
+                showToast('📋', 'Receipt copied! Paste it in our chat!');
+            } catch (err) {
+                showToast('✨', 'Receipt ready to screenshot!');
+            }
+            document.body.removeChild(textarea);
+        }
+
+        // ==========================================
+        // TOAST NOTIFICATION HELPER
+        // ==========================================
+        let toastTimeout;
+        function showToast(icon, message) {
+            const container = document.getElementById('toastContainer');
+            document.getElementById('toastIcon').textContent = icon;
+            document.getElementById('toastMessage').textContent = message;
+
+            container.classList.remove('opacity-0', '-translate-y-4');
+            container.classList.add('opacity-100', 'translate-y-0');
+
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                container.classList.add('opacity-0', '-translate-y-4');
+                container.classList.remove('opacity-100', 'translate-y-0');
+            }, 2800);
+        }
+
+        // ==========================================
+        // AMBIENT STARLIGHT & FLOATING HEARTS CANVAS
+        // ==========================================
+        const canvas = document.getElementById('starlightCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        function initParticles() {
+            particles = [];
+            const count = Math.min(75, Math.floor((canvas.width * canvas.height) / 16000));
+            for (let i = 0; i < count; i++) {
+                particles.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 1.8 + 0.5,
+                    speedY: -(Math.random() * 0.35 + 0.1),
+                    speedX: (Math.random() - 0.5) * 0.2,
+                    alpha: Math.random() * 0.7 + 0.2,
+                    pulseSpeed: Math.random() * 0.02 + 0.005,
+                    isHeart: Math.random() > 0.86
+                });
+            }
+        }
+
+        function drawHeart(x, y, size, alpha) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.fillStyle = `rgba(244, 114, 182, ${alpha})`;
+            ctx.beginPath();
+            ctx.moveTo(0, size / 4);
+            ctx.bezierCurveTo(0, 0, -size / 2, 0, -size / 2, size / 4);
+            ctx.bezierCurveTo(-size / 2, size / 2, 0, size * 0.75, 0, size);
+            ctx.bezierCurveTo(0, size * 0.75, size / 2, size / 2, size / 2, size / 4);
+            ctx.bezierCurveTo(size / 2, 0, 0, 0, 0, size / 4);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.alpha += Math.sin(Date.now() * p.pulseSpeed) * 0.008;
+                const clampedAlpha = Math.max(0.15, Math.min(0.85, p.alpha));
+
+                if (p.y < -15) {
+                    p.y = canvas.height + 15;
+                    p.x = Math.random() * canvas.width;
+                }
+
+                if (p.isHeart) {
+                    drawHeart(p.x, p.y, p.radius * 5, clampedAlpha * 0.75);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(233, 213, 255, ${clampedAlpha})`;
+                    ctx.fill();
+                }
+            });
+
+            requestAnimationFrame(animateCanvas);
+        }
+
+        window.addEventListener('resize', () => {
+            resizeCanvas();
+            initParticles();
+        });
+
+        window.onload = function () {
+            resizeCanvas();
+            initParticles();
+            animateCanvas();
+        };
+    </script>
+</body>
+</html>
